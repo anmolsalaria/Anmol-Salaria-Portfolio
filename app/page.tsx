@@ -321,8 +321,22 @@ const CodeEditor = () => {
 
 const FloatingTechIcons = () => {
   const [isSkillsSectionVisible, setIsSkillsSectionVisible] = useState(false);
+  const [windowDimensions, setWindowDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
+    // Set initial window dimensions
+    setWindowDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    const handleResize = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
     const handleScroll = () => {
       const skillsSection = document.getElementById('skills');
       if (skillsSection) {
@@ -334,9 +348,13 @@ const FloatingTechIcons = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
     handleScroll(); // Check initial state
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const techIcons = [
@@ -357,6 +375,11 @@ const FloatingTechIcons = () => {
     { icon: FaRocket, delay: 28, duration: 30 },
   ];
 
+  // Don't render until window dimensions are available
+  if (windowDimensions.width === 0 || windowDimensions.height === 0) {
+    return null;
+  }
+
   return (
     <div className={`fixed inset-0 pointer-events-none overflow-hidden z-0 transition-opacity duration-500 ${isSkillsSectionVisible ? 'opacity-0' : 'opacity-100'}`}>
       {techIcons.map((tech, index) => (
@@ -364,21 +387,21 @@ const FloatingTechIcons = () => {
           key={index}
           className="absolute text-emerald-400/20"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * windowDimensions.width,
+            y: Math.random() * windowDimensions.height,
             rotate: 0,
             scale: 0.5,
           }}
           animate={{
             x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
+              Math.random() * windowDimensions.width,
+              Math.random() * windowDimensions.width,
+              Math.random() * windowDimensions.width,
             ],
             y: [
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
+              Math.random() * windowDimensions.height,
+              Math.random() * windowDimensions.height,
+              Math.random() * windowDimensions.height,
             ],
             rotate: [0, 360, 720],
             scale: [0.5, 1, 0.5],
@@ -450,13 +473,15 @@ export default function Portfolio() {
       return `https://wa.me/916306150846?text=${encodedMessage}`;
     };
     
-    if (name && email && message) {
-      const whatsappLink = generateWhatsAppLink(name, email, message);
-      window.open(whatsappLink, '_blank');
-    } else {
-      // If form is not filled, open WhatsApp with a generic message
-      const whatsappLink = generateWhatsAppLink('Visitor', 'visitor@example.com', 'Hi! I would like to get in touch with you.');
-      window.open(whatsappLink, '_blank');
+    if (typeof window !== 'undefined') {
+      if (name && email && message) {
+        const whatsappLink = generateWhatsAppLink(name, email, message);
+        window.open(whatsappLink, '_blank');
+      } else {
+        // If form is not filled, open WhatsApp with a generic message
+        const whatsappLink = generateWhatsAppLink('Visitor', 'visitor@example.com', 'Hi! I would like to get in touch with you.');
+        window.open(whatsappLink, '_blank');
+      }
     }
   }
 
