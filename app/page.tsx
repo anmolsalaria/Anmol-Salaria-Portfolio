@@ -324,6 +324,8 @@ const FloatingTechIcons = () => {
   const [windowDimensions, setWindowDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     // Set initial window dimensions
     setWindowDimensions({
       width: window.innerWidth,
@@ -430,6 +432,8 @@ export default function Portfolio() {
   const [isContactPending, setIsContactPending] = useState(false)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     if (darkMode) {
       document.documentElement.classList.add("dark")
     } else {
