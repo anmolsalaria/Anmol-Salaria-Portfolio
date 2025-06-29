@@ -1,3 +1,5 @@
+"use client"
+
 export const metadata = {
   title: "Anmol's Portfolio - Built with Next.js | The Journey's Just Begun",
   description: "Welcome to Anmol Salaria's portfolio. Explore projects, skills, and the journey of a passionate developer.",
@@ -24,8 +26,6 @@ export const metadata = {
     images: ["/images/og-image.png"],
   },
 };
-
-"use client"
 
 import type React from "react"
 
